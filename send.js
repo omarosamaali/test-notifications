@@ -17,7 +17,8 @@ async function sendToAll(title, body) {
     return;
   }
 
-  const tokens = Object.values(data).map(d => d.token).filter(Boolean);
+  // إزالة التكرار
+  const tokens = [...new Set(Object.values(data).map(d => d.token).filter(Boolean))];
   console.log(`📢 هيبعت لـ ${tokens.length} مستخدم`);
 
   // بعت على كل token
