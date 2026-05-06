@@ -108,61 +108,50 @@
   </div>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { initializeApp }       from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyBQCPTwnybdtLNUwNCzDDA23TLt3pD5zP4",
-      authDomain: "omdachina25.firebaseapp.com",
-      projectId: "omdachina25",
-      storageBucket: "omdachina25.firebasestorage.app",
+      apiKey:            "AIzaSyBQCPTwnybdtLNUwNCzDDA23TLt3pD5zP4",
+      authDomain:        "omdachina25.firebaseapp.com",
+      databaseURL:       "https://omdachina25-default-rtdb.firebaseio.com",
+      projectId:         "omdachina25",
+      storageBucket:     "omdachina25.firebasestorage.app",
       messagingSenderId: "1031143486488",
-      appId: "1:1031143486488:web:0a662055d970826268bf6d"
+      appId:             "1:1031143486488:web:0a662055d970826268bf6d"
     };
 
-    const app = initializeApp(firebaseConfig);
+    const app       = initializeApp(firebaseConfig);
     const messaging = getMessaging(app);
+    const db        = getDatabase(app);
 
     async function subscribeUser() {
       try {
         const permission = await Notification.requestPermission();
-        if (permission !== 'granted') {
-          console.log('🚫 رفض المستخدم الإذن');
-          return;
-        }
+        if (permission !== 'granted') return;
 
-        const vKey = "BB168ueRnlIhDY0r5lrLD7pvQydPk467794F97CWizmwnvzxAWtlx3fuZ9NQtxc0QeokXdnBjiYoiINBIRvCQiY";
+        const vKey  = "BB168ueRnlIhDY0r5lrLD7pvQydPk467794F97CWizmwnvzxAWtlx3fuZ9NQtxc0QeokXdnBjiYoiINBIRvCQiY";
         const token = await getToken(messaging, { vapidKey: vKey });
+        if (!token) return;
 
-        if (!token) {
-          console.warn('⚠️ مفيش توكن');
-          return;
-        }
-
-        // لو اشترك قبل كده متبعتش تاني
+        // لو نفس الـ token متبعتوش تاني
         if (localStorage.getItem('notif_token') === token) {
           console.log('✅ مشترك بالفعل');
           return;
         }
 
-        // ابعت الـ token للـ server عشان يشترك في topic 'all'
-        const serverUrl = window.location.port === '3000'
-          ? '/subscribe'
-          : 'http://localhost:3000/subscribe';
-        const res = await fetch(serverUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token })
+        // احفظ الـ token في Firebase Database
+        const safeKey = token.replace(/[.#$[\]]/g, '_');
+        await set(ref(db, 'fcm_tokens/' + safeKey), {
+          token,
+          savedAt: Date.now()
         });
 
-        if (res.ok) {
-          localStorage.setItem('notif_token', token);
-          console.log('✅ تم الاشتراك في الإشعارات');
-        } else {
-          console.warn('⚠️ فشل الاشتراك، هيحاول مرة تانية بكره');
-        }
+        localStorage.setItem('notif_token', token);
+        console.log('✅ تم حفظ الـ token في Firebase');
       } catch (err) {
-        console.error('💥 خطأ في الاشتراك:', err);
+        console.error('💥 خطأ:', err);
       }
     }
 
