@@ -1,6 +1,3 @@
-// firebase-messaging-sw.js
-// ضع هذا الملف في المجلد الجذر (public/) من موقعك
-
 importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js');
 
@@ -11,31 +8,26 @@ firebase.initializeApp({
   projectId:         "omdachina25",
   storageBucket:     "omdachina25.firebasestorage.app",
   messagingSenderId: "1031143486488",
-  appId:             "1:1031143486488:web:0a662055d970826268bf6d",
-  measurementId:     "G-G9TLSKJ92H"
+  appId:             "1:1031143486488:web:0a662055d970826268bf6d"
 });
 
 const messaging = firebase.messaging();
 
-// إشعار في الخلفية (التطبيق مغلق أو مخفي)
 messaging.onBackgroundMessage(payload => {
-  console.log('📩 Background Message:', payload);
   const title = payload.notification?.title || 'إشعار جديد';
   const body  = payload.notification?.body  || '';
   const icon  = payload.notification?.icon  || '/images/icon-192.png';
   const url   = payload.data?.url || '/';
 
   self.registration.showNotification(title, {
-    body,
-    icon,
+    body, icon,
     badge: '/images/icon-192.png',
-    tag:   'kararif-notif',
+    tag: 'kararif-notif',
     renotify: true,
     data: { url }
   });
 });
 
-// لما المستخدم يضغط على الإشعار
 self.addEventListener('notificationclick', event => {
   event.notification.close();
   const url = event.notification.data?.url || '/';
@@ -46,4 +38,16 @@ self.addEventListener('notificationclick', event => {
       return clients.openWindow(url);
     })
   );
+});
+
+// ← ده هو الإصلاح — يمنع الـ error
+self.addEventListener('fetch', event => {
+  // مش بنعمل حاجة، بس لازم الـ listener موجود
+});
+
+self.addEventListener('message', event => {
+  // رد فوري على أي message عشان نمنع الـ channel error
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
