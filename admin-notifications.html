@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة الإشعارات — Admin خرائف</title>
+<link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'El Messiri',sans-serif;background:#0a0f1e;color:white;min-height:100vh;padding:30px 20px;}
+.wrap{max-width:540px;margin:0 auto;}
+h1{color:#e8cb9a;font-size:1.6rem;margin-bottom:4px;text-align:center;}
+.sub{color:rgba(255,255,255,.4);font-size:.82rem;text-align:center;margin-bottom:30px;}
+
+.card{background:rgba(6,20,45,.9);border:1px solid rgba(232,203,154,.2);border-radius:18px;padding:24px;margin-bottom:20px;}
+.section-title{color:rgba(232,203,154,.7);font-size:.78rem;letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.06);}
+.label{color:rgba(255,255,255,.5);font-size:.8rem;margin-bottom:6px;display:block;}
+input,textarea,select{width:100%;background:rgba(0,30,60,.6);border:1px solid rgba(232,203,154,.2);border-radius:10px;padding:10px 14px;color:white;font-family:'El Messiri',sans-serif;font-size:.9rem;outline:none;transition:border .2s;margin-bottom:14px;}
+input:focus,textarea:focus,select:focus{border-color:rgba(232,203,154,.5);}
+textarea{resize:vertical;min-height:80px;}
+select option{background:#0a2348;}
+
+.btn-send{width:100%;padding:14px;background:linear-gradient(135deg,#c0873a,#e8cb9a);border:none;border-radius:12px;color:#060f22;font-family:'El Messiri',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-send:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(232,203,154,.3);}
+.btn-send:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+
+.result{margin-top:14px;padding:12px 16px;border-radius:10px;font-size:.85rem;display:none;text-align:center;}
+.result.ok {background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.3);color:#4ade80;}
+.result.err{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:#f87171;}
+
+.note{background:rgba(232,203,154,.06);border:1px solid rgba(232,203,154,.15);border-radius:12px;padding:16px;font-size:.8rem;color:rgba(255,255,255,.55);line-height:1.9;}
+.note strong{color:#e8cb9a;}
+code{background:rgba(0,52,67,.7);border-radius:4px;padding:1px 6px;font-size:.75rem;color:#adf0ff;font-family:monospace;word-break:break-all;}
+
+.step{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;}
+.step-n{min-width:22px;height:22px;background:rgba(232,203,154,.15);border:1px solid rgba(232,203,154,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#e8cb9a;font-weight:700;flex-shrink:0;margin-top:2px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>🔔 لوحة الإشعارات</h1>
+  <div class="sub">أرسل إشعارات فورية لمستخدمي خرائف</div>
+
+  <!-- كيف تحصل على الـ Server Key -->
+  <div class="card note">
+    <div class="section-title">📌 كيف تحصل على Server Key</div>
+    <div class="step"><div class="step-n">١</div><div>روح <strong>Firebase Console → Project Settings → Cloud Messaging</strong></div></div>
+    <div class="step"><div class="step-n">٢</div><div>قسم <strong>"Cloud Messaging API (Legacy)"</strong> — فعّله لو Disabled</div></div>
+    <div class="step"><div class="step-n">٣</div><div>انسخ <strong>Server key</strong> وضعه في الخانة أدناه</div></div>
+    <div class="step"><div class="step-n">٤</div><div>الـ FCM Token: يظهر في <strong>console.log</strong> المتصفح لما المستخدم يشترك في install.html</div></div>
+  </div>
+
+  <!-- فورم الإرسال -->
+  <div class="card">
+    <div class="section-title">✉️ إرسال إشعار</div>
+
+    <label class="label">🔑 Server Key (من Firebase Cloud Messaging)</label>
+    <input type="password" id="serverKey" placeholder="AAAA...">
+
+    <label class="label">📱 نوع الإرسال</label>
+    <select id="sendType" onchange="toggleTarget()">
+      <option value="single">إرسال لمستخدم واحد (بـ FCM Token)</option>
+      <option value="topic">إرسال للجميع (بـ Topic)</option>
+    </select>
+
+    <div id="singleTarget">
+      <label class="label">🎯 FCM Token المستخدم</label>
+      <input type="text" id="singleToken" placeholder="الصقه من console.log في المتصفح">
+    </div>
+
+    <div id="topicTarget" style="display:none;">
+      <label class="label">📣 اسم الـ Topic</label>
+      <input type="text" id="topicName" value="all" placeholder="all">
+      <div style="font-size:.75rem;color:rgba(255,255,255,.35);margin-top:-10px;margin-bottom:14px;">
+        ⚠️ يجب أن يكون المستخدمون مشتركين في نفس الـ Topic من كودك
+      </div>
+    </div>
+
+    <label class="label">📌 عنوان الإشعار</label>
+    <input type="text" id="notifTitle" placeholder="مثال: 🎮 تحدٍّ جديد في خرائف!">
+
+    <label class="label">📝 نص الإشعار</label>
+    <textarea id="notifBody" placeholder="مثال: مغامر! تحدٍّ جديد ينتظرك الآن، هل أنت مستعد؟ 🔥"></textarea>
+
+    <label class="label">🔗 رابط عند الضغط على الإشعار (اختياري)</label>
+    <input type="text" id="notifUrl" placeholder="https://kararif.wecan.ae/play.html">
+
+    <button class="btn-send" id="sendBtn" onclick="sendNotif()">📤 أرسل الإشعار الآن</button>
+    <div class="result" id="result"></div>
+  </div>
+
+</div>
+
+<script>
+function toggleTarget() {
+  const t = document.getElementById('sendType').value;
+  document.getElementById('singleTarget').style.display = t === 'single' ? 'block' : 'none';
+  document.getElementById('topicTarget').style.display  = t === 'topic'  ? 'block' : 'none';
+}
+
+async function sendNotif() {
+  const key   = document.getElementById('serverKey').value.trim();
+  const type  = document.getElementById('sendType').value;
+  const title = document.getElementById('notifTitle').value.trim();
+  const body  = document.getElementById('notifBody').value.trim();
+  const url   = document.getElementById('notifUrl').value.trim() || '/';
+  const btn   = document.getElementById('sendBtn');
+
+  if (!key)   { showResult('⚠️ أدخل Server Key أولاً', 'err'); return; }
+  if (!title) { showResult('⚠️ أدخل عنوان الإشعار', 'err'); return; }
+  if (!body)  { showResult('⚠️ أدخل نص الإشعار', 'err'); return; }
+
+  let target = {};
+  if (type === 'single') {
+    const token = document.getElementById('singleToken').value.trim();
+    if (!token) { showResult('⚠️ أدخل FCM Token', 'err'); return; }
+    target = { to: token };
+  } else {
+    const topic = document.getElementById('topicName').value.trim() || 'all';
+    target = { to: '/topics/' + topic };
+  }
+
+  btn.disabled = true; btn.textContent = '⏳ جارٍ الإرسال...';
+
+  const payload = {
+    ...target,
+    notification: { title, body, icon: '/images/icon-192.png', click_action: url },
+    data: { url }
+  };
+
+  try {
+    const r = await fetch('https://fcm.googleapis.com/fcm/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'key=' + key },
+      body: JSON.stringify(payload)
+    });
+    const d = await r.json();
+    if (d.success >= 1 || d.message_id) {
+      showResult('✅ تم إرسال الإشعار بنجاح! 🎉', 'ok');
+    } else {
+      showResult('❌ ' + (d.results?.[0]?.error || JSON.stringify(d)), 'err');
+    }
+  } catch(e) {
+    showResult('❌ تعذر الاتصال بـ Firebase: ' + e.message, 'err');
+  } finally {
+    btn.disabled = false; btn.textContent = '📤 أرسل الإشعار الآن';
+  }
+}
+
+function showResult(msg, type) {
+  const el = document.getElementById('result');
+  el.textContent = msg; el.className = 'result ' + type; el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 7000);
+}
+</script>
+</body>
+</html>
