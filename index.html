@@ -9,41 +9,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getMessaging, getToken, onMessage }
-      from "https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js";
-
-    const app = initializeApp({
-      apiKey: "AIzaSyBQCPTwnybdtLNUwNCzDDA23TLt3pD5zP4",
-      authDomain: "omdachina25.firebaseapp.com",
-      databaseURL: "https://omdachina25-default-rtdb.firebaseio.com",
-      projectId: "omdachina25",
-      storageBucket: "omdachina25.firebasestorage.app",
-      messagingSenderId: "1031143486488",
-      appId: "1:1031143486488:web:0a662055d970826268bf6d",
-      measurementId: "G-G9TLSKJ92H"
-    });
-
-    const messaging = getMessaging(app);
-    window._messaging = messaging;
-    window._vapidKey = "BB168ueRnlIhDY0r5lrLD7pvQydPk467794F97CWizmwnvzxAWtlx3fuZ9NQtxc0QeokXdnBjiYoiINBIRvCQiY";
-    window._getToken = getToken;
-
-    onMessage(messaging, payload => {
-      showInAppNotif(
-        payload.notification?.title || 'إشعار جديد',
-        payload.notification?.body || ''
-      );
-    });
-  </script>
-
   <style>
     :root {
       --gold: #e8cb9a;
-      --gold-light: #ffe8a0;
       --navy: #060f22;
-      --teal: #003443;
       --card: rgba(6, 20, 45, 0.88);
     }
 
@@ -57,727 +26,147 @@
       font-family: 'El Messiri', sans-serif;
       background: var(--navy);
       min-height: 100vh;
-      overflow-x: hidden;
       color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .stars {
       position: fixed;
       inset: 0;
       z-index: 0;
-      background: radial-gradient(ellipse at 20% 20%, rgba(0, 80, 120, .45) 0%, transparent 60%), radial-gradient(ellipse at 80% 80%, rgba(10, 35, 72, .65) 0%, transparent 60%);
-    }
-
-    .stars::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: radial-gradient(1px 1px at 8% 12%, rgba(255, 255, 255, .5) 0%, transparent 100%), radial-gradient(1px 1px at 25% 35%, rgba(255, 255, 255, .3) 0%, transparent 100%), radial-gradient(1px 1px at 48% 8%, rgba(255, 255, 255, .6) 0%, transparent 100%), radial-gradient(1px 1px at 68% 22%, rgba(255, 255, 255, .35) 0%, transparent 100%), radial-gradient(1px 1px at 88% 55%, rgba(255, 255, 255, .4) 0%, transparent 100%), radial-gradient(2px 2px at 44% 52%, rgba(232, 203, 154, .3) 0%, transparent 100%), radial-gradient(1px 1px at 60% 75%, rgba(255, 255, 255, .25) 0%, transparent 100%);
-      animation: twinkle 4s ease-in-out infinite alternate;
-    }
-
-    @keyframes twinkle {
-      0% {
-        opacity: .6
-      }
-
-      100% {
-        opacity: 1
-      }
+      background: radial-gradient(ellipse at 20% 20%, rgba(0, 80, 120, .45) 0%, transparent 60%);
     }
 
     .page {
       position: relative;
       z-index: 10;
+      width: 100%;
       max-width: 420px;
-      margin: 0 auto;
-      padding: 40px 20px 60px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 28px;
-    }
-
-    .logo-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      animation: fadeDown .7s ease both;
+      padding: 20px;
+      text-align: center;
     }
 
     .logo-wrap img {
       width: 88px;
       filter: drop-shadow(0 0 20px rgba(232, 203, 154, .4));
-      animation: float 3s ease-in-out infinite;
-    }
-
-    @keyframes float {
-
-      0%,
-      100% {
-        transform: translateY(0)
-      }
-
-      50% {
-        transform: translateY(-8px)
-      }
     }
 
     .app-name {
-      font-size: 2rem;
-      font-weight: 700;
+      font-size: 2.2rem;
       color: var(--gold);
-      letter-spacing: 2px;
-      text-shadow: 0 0 30px rgba(232, 203, 154, .35);
-    }
-
-    .app-sub {
-      font-size: .85rem;
-      color: rgba(255, 255, 255, .45);
-      letter-spacing: 1px;
-    }
-
-    .detect-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(232, 203, 154, .1);
-      border: 1px solid rgba(232, 203, 154, .25);
-      border-radius: 30px;
-      padding: 6px 18px;
-      font-size: .82rem;
-      color: var(--gold);
-      animation: fadeDown .8s .1s ease both;
+      margin-top: 10px;
     }
 
     .install-card {
-      width: 100%;
       background: var(--card);
       border: 1px solid rgba(232, 203, 154, .2);
       border-radius: 24px;
-      backdrop-filter: blur(20px);
-      overflow: hidden;
-      box-shadow: 0 16px 60px rgba(0, 0, 0, .5), inset 0 1px 0 rgba(255, 255, 255, .05);
-      animation: fadeUp .7s .15s ease both;
-    }
-
-    .card-glow {
-      height: 3px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
-    }
-
-    .card-body {
-      padding: 28px 24px 24px;
-    }
-
-    .card-icon-big {
-      font-size: 3.5rem;
-      text-align: center;
-      margin-bottom: 14px;
-      filter: drop-shadow(0 4px 12px rgba(232, 203, 154, .3));
-      animation: iconPop .6s .3s cubic-bezier(.22, 1, .36, 1) both;
-    }
-
-    @keyframes iconPop {
-      from {
-        transform: scale(0) rotate(-20deg)
-      }
-
-      to {
-        transform: scale(1) rotate(0)
-      }
-    }
-
-    .card-title {
-      font-size: 1.3rem;
-      font-weight: 700;
-      text-align: center;
-      color: var(--gold);
-      margin-bottom: 8px;
-    }
-
-    .card-desc {
-      font-size: .88rem;
-      color: rgba(255, 255, 255, .55);
-      text-align: center;
-      line-height: 1.8;
-      margin-bottom: 22px;
-    }
-
-    .features {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 24px;
-    }
-
-    .feat {
-      background: rgba(0, 52, 67, .5);
-      border: 1px solid rgba(232, 203, 154, .12);
-      border-radius: 14px;
-      padding: 12px 8px;
-      text-align: center;
-    }
-
-    .feat .feat-icon {
-      font-size: 1.4rem;
-      margin-bottom: 4px;
-    }
-
-    .feat .feat-lbl {
-      font-size: .68rem;
-      color: rgba(255, 255, 255, .55);
-      line-height: 1.4;
+      padding: 30px;
+      margin-top: 30px;
     }
 
     .btn-install {
       width: 100%;
-      padding: 15px;
-      background: linear-gradient(135deg, #c0873a, #e8cb9a, #c0873a);
-      background-size: 200% 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #c0873a, #e8cb9a);
       border: none;
       border-radius: 14px;
-      color: #060f22;
-      font-family: 'El Messiri', sans-serif;
-      font-size: 1.05rem;
       font-weight: 700;
       cursor: pointer;
-      animation: shineLoop 3s ease-in-out infinite;
-      transition: transform .2s, box-shadow .2s;
-      margin-bottom: 12px;
-    }
-
-    .btn-install:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(232, 203, 154, .3);
-    }
-
-    .btn-install:disabled {
-      opacity: .6;
-      cursor: not-allowed;
-      transform: none;
-      animation: none;
-    }
-
-    @keyframes shineLoop {
-      0% {
-        background-position: 100% 0
-      }
-
-      50% {
-        background-position: 0 0
-      }
-
-      100% {
-        background-position: 100% 0
-      }
-    }
-
-    .btn-secondary {
-      width: 100%;
-      padding: 13px;
-      background: rgba(0, 52, 67, .6);
-      border: 1px solid rgba(232, 203, 154, .25);
-      border-radius: 14px;
-      color: var(--gold);
-      font-family: 'El Messiri', sans-serif;
-      font-size: .95rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all .25s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    .btn-secondary:hover {
-      background: rgba(0, 70, 90, .7);
-      border-color: rgba(232, 203, 154, .5);
-    }
-
-    .btn-notif {
-      width: 100%;
-      padding: 13px;
-      background: rgba(0, 52, 67, .6);
-      border: 1px solid rgba(232, 203, 154, .25);
-      border-radius: 14px;
-      color: var(--gold);
-      font-family: 'El Messiri', sans-serif;
-      font-size: .95rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all .25s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .btn-notif:hover {
-      background: rgba(0, 70, 90, .7);
-      border-color: rgba(232, 203, 154, .5);
-    }
-
-    .btn-notif.subscribed {
-      background: rgba(74, 222, 128, .12);
-      border-color: rgba(74, 222, 128, .4);
-      color: #4ade80;
-      cursor: default;
-    }
-
-    .ios-steps {
-      display: none;
-      background: rgba(0, 52, 67, .5);
-      border: 1px solid rgba(232, 203, 154, .18);
-      border-radius: 14px;
-      padding: 16px;
-      margin-top: 12px;
-    }
-
-    .ios-steps.show {
-      display: block;
-    }
-
-    .ios-step {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 8px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, .05);
-      font-size: .84rem;
-      color: rgba(255, 255, 255, .7);
-      line-height: 1.6;
-    }
-
-    .ios-step:last-child {
-      border-bottom: none;
-    }
-
-    .ios-step .step-num {
-      min-width: 24px;
-      height: 24px;
-      background: rgba(232, 203, 154, .15);
-      border: 1px solid rgba(232, 203, 154, .3);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: .72rem;
-      color: var(--gold);
-      font-weight: 700;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-
-    .ios-step strong {
-      color: var(--gold-light);
     }
 
     .success-box {
       display: none;
-      text-align: center;
-      padding: 20px;
+      color: #4ade80;
+      margin-top: 20px;
     }
 
     .success-box.show {
       display: block;
-    }
-
-    .success-icon {
-      font-size: 3rem;
-      margin-bottom: 8px;
-    }
-
-    .success-title {
-      color: #4ade80;
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-
-    .success-sub {
-      color: rgba(255, 255, 255, .5);
-      font-size: .84rem;
-    }
-
-    .notif-card {
-      width: 100%;
-      background: var(--card);
-      border: 1px solid rgba(232, 203, 154, .15);
-      border-radius: 20px;
-      backdrop-filter: blur(20px);
-      padding: 20px;
-      animation: fadeUp .7s .25s ease both;
-    }
-
-    .notif-card-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--gold);
-      margin-bottom: 6px;
-    }
-
-    .notif-card-sub {
-      font-size: .8rem;
-      color: rgba(255, 255, 255, .45);
-      margin-bottom: 14px;
-      line-height: 1.6;
-    }
-
-    .notif-status {
-      font-size: .78rem;
-      padding: 6px 14px;
-      border-radius: 20px;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      background: rgba(255, 255, 255, .06);
-      color: rgba(255, 255, 255, .5);
-      margin-top: 10px;
-    }
-
-    .notif-status.on {
-      background: rgba(74, 222, 128, .12);
-      color: #4ade80;
-    }
-
-    .notif-status.off {
-      background: rgba(248, 113, 113, .12);
-      color: #f87171;
-    }
-
-    .inapp-toast {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%) translateY(-120px);
-      z-index: 99999;
-      background: linear-gradient(135deg, #0a2348, #062030);
-      border: 1px solid rgba(232, 203, 154, .35);
-      border-radius: 16px;
-      padding: 14px 18px;
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      max-width: 340px;
-      width: 90%;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, .5);
-      transition: transform .4s cubic-bezier(.22, 1, .36, 1);
-    }
-
-    .inapp-toast.show {
-      transform: translateX(-50%) translateY(0);
-    }
-
-    .inapp-toast-icon {
-      font-size: 1.5rem;
-      flex-shrink: 0;
-    }
-
-    .inapp-toast-title {
-      color: var(--gold);
-      font-size: .88rem;
-      font-weight: 700;
-      margin-bottom: 2px;
-    }
-
-    .inapp-toast-body {
-      color: rgba(255, 255, 255, .65);
-      font-size: .78rem;
-      line-height: 1.5;
-    }
-
-    @keyframes fadeDown {
-      from {
-        opacity: 0;
-        transform: translateY(-20px)
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0)
-      }
-    }
-
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px)
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0)
-      }
     }
   </style>
 </head>
 
 <body>
   <div class="stars"></div>
-
-  <div class="inapp-toast" id="inappToast">
-    <div class="inapp-toast-icon">🔔</div>
-    <div>
-      <div class="inapp-toast-title" id="toastTitle">إشعار جديد</div>
-      <div class="inapp-toast-body" id="toastBody"></div>
-    </div>
-  </div>
-
   <div class="page">
     <div class="logo-wrap">
-      <img src="images/animated-logo-ii.gif" alt="خرائف"
-        onerror="this.style.cssText='width:80px;height:80px;background:rgba(232,203,154,.1);border-radius:18px;border:1px solid rgba(232,203,154,.2)'">
+      <img src="images/animated-logo-ii.gif" alt="خرائف">
       <div class="app-name">خرائف</div>
-      <div class="app-sub">لعبة الأسئلة والمغامرات</div>
     </div>
-
-    <div class="detect-badge" id="deviceBadge">🔍 جارٍ التعرف على جهازك...</div>
 
     <div class="install-card">
-      <div class="card-glow"></div>
-      <div class="card-body">
-        <div class="card-icon-big" id="mainIcon">📲</div>
-        <div class="card-title" id="mainTitle">ثبّت التطبيق</div>
-        <div class="card-desc" id="mainDesc">استمتع بأفضل تجربة لعب مع تطبيق خرائف</div>
-        <div class="features">
-          <div class="feat">
-            <div class="feat-icon">⚡</div>
-            <div class="feat-lbl">يفتح بسرعة</div>
-          </div>
-          <div class="feat">
-            <div class="feat-icon">📴</div>
-            <div class="feat-lbl">يعمل بدون نت</div>
-          </div>
-          <div class="feat">
-            <div class="feat-icon">🔔</div>
-            <div class="feat-lbl">إشعارات فورية</div>
-          </div>
-        </div>
-        <button class="btn-install" id="installBtn" onclick="handleInstall()">📲 ثبّت التطبيق الآن</button>
-        <div class="ios-steps" id="iosSteps">
-          <div class="ios-step">
-            <div class="step-num">١</div>
-            <div>اضغط على أيقونة <strong>المشاركة ↑</strong> في أسفل Safari</div>
-          </div>
-          <div class="ios-step">
-            <div class="step-num">٢</div>
-            <div>اختر <strong>"إضافة إلى الشاشة الرئيسية"</strong></div>
-          </div>
-          <div class="ios-step">
-            <div class="step-num">٣</div>
-            <div>اضغط <strong>"إضافة"</strong> في الأعلى اليمين</div>
-          </div>
-          <div class="ios-step">
-            <div class="step-num">٤</div>
-            <div>ستجد أيقونة <strong>خرائف</strong> على شاشتك ✨</div>
-          </div>
-        </div>
-        <div class="success-box" id="successInstall">
-          <div class="success-icon">✅</div>
-          <div class="success-title">تم التثبيت بنجاح!</div>
-          <div class="success-sub">يمكنك الآن فتح خرائف من شاشتك الرئيسية</div>
-        </div>
+      <h2 style="color:var(--gold)">تثبيت التطبيق</h2>
+      <p style="margin: 15px 0 25px; opacity: 0.7;">استمتع بتجربة أسرع من شاشتك الرئيسية</p>
+      <button class="btn-install" id="installBtn">📲 تثبيت الآن</button>
+      <div class="success-box" id="successInstall">
+        <h3>✅ تم التثبيت بنجاح</h3>
       </div>
-    </div>
-
-    <div class="notif-card">
-      <div class="notif-card-title">🔔 الإشعارات الفورية</div>
-      <div class="notif-card-sub">اشترك لتصلك آخر الأخبار والألعاب الجديدة فور نشرها</div>
-      <button class="btn-notif" id="notifBtn" onclick="handleNotifSubscribe()">🔔 اشترك في الإشعارات</button>
-      <div class="notif-status" id="notifStatus">⭕ غير مشترك بعد</div>
-      <br>
-      <button class="btn-secondary" onclick="forceReinstall()">🔄 إعادة التثبيت</button>
     </div>
   </div>
 
-  <script>
-    // ══════════════════════════════════════════
-    // متغيرات الجهاز
-    // ══════════════════════════════════════════
-    const ua = navigator.userAgent;
-    const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
-    const isAndroid = /Android/.test(ua);
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
-    const platform = isIOS ? 'ios' : isAndroid ? 'android' : 'desktop';
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js";
 
-    const LABELS = {
-      ios: { icon: '🍎', badge: 'iOS — iPhone / iPad', title: 'أضف لشاشتك الرئيسية', btn: '📋 كيف أثبّت على iOS؟', desc: 'افتح خرائف مباشرة من شاشتك كتطبيق كامل!' },
-      android: { icon: '🤖', badge: 'Android', title: 'ثبّت التطبيق', btn: '📲 ثبّت الآن', desc: 'نزّل خرائف واستمتع بتجربة أسرع وأجمل' },
-      desktop: { icon: '💻', badge: 'Windows / Mac / Linux', title: 'ثبّت على جهازك', btn: '🖥️ ثبّت على الحاسوب', desc: 'ثبّت خرائف وافتحه من شريط المهام' },
+    const firebaseConfig = {
+      apiKey: "AIzaSyBQCPTwnybdtLNUwNCzDDA23TLt3pD5zP4",
+      authDomain: "omdachina25.firebaseapp.com",
+      projectId: "omdachina25",
+      storageBucket: "omdachina25.firebasestorage.app",
+      messagingSenderId: "1031143486488",
+      appId: "1:1031143486488:web:0a662055d970826268bf6d"
     };
 
-    // ══════════════════════════════════════════
-    // تهيئة الصفحة
-    // ══════════════════════════════════════════
-    (function init() {
-      const L = LABELS[platform];
-      document.getElementById('deviceBadge').innerHTML = L.icon + ' ' + L.badge;
-      document.getElementById('mainIcon').textContent = L.icon;
-      document.getElementById('mainTitle').textContent = L.title;
-      document.getElementById('mainDesc').textContent = L.desc;
-      document.getElementById('installBtn').textContent = L.btn;
-      if (isStandalone) showAlreadyInstalled();
-    })();
+    const app = initializeApp(firebaseConfig);
+    const messaging = getMessaging(app);
 
-    // ══════════════════════════════════════════
-    // منطق التثبيت — تعريف واحد فقط
-    // ══════════════════════════════════════════
-  let deferredPrompt = null;
-
-  // احفظ الـ prompt لو جه
-  window.addEventListener('beforeinstallprompt', e => {
-    e.preventDefault();
-    deferredPrompt = e;
-    console.log('✅ beforeinstallprompt fired');
-  });
-
-  window.addEventListener('appinstalled', () => {
-    deferredPrompt = null;
-    showAlreadyInstalled();
-  });
-
-  // ← السر: اعرض الزر تلقائي بعد ثانية بدون انتظار الـ prompt
-  setTimeout(() => {
-    if (isStandalone) return;
-    // لو الـ prompt موجود شغّله مباشرة
-    if (deferredPrompt) {
-      triggerInstall();
-    }
-    // لو مش موجود — الزر هيشتغل يدوي لما يضغط عليه
-  }, 1500);
-
-  function triggerInstall() {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(r => {
-      deferredPrompt = null;
-      if (r.outcome === 'accepted') showAlreadyInstalled();
-    });
-  }
-
-  function handleInstall() {
-    if (isStandalone) { showAlreadyInstalled(); return; }
-
-    if (platform === 'ios') {
-      const s = document.getElementById('iosSteps');
-      s.classList.toggle('show');
-      document.getElementById('installBtn').textContent =
-        s.classList.contains('show') ? '▲ إخفاء الخطوات' : '📋 كيف أثبّت على iOS؟';
-      return;
-    }
-
-    if (deferredPrompt) {
-      triggerInstall();
-    } else {
-      // مفيش prompt — اعرض تعليمات يدوية
-      document.getElementById('installBtn').textContent = '↗ ابحث عن أيقونة + في شريط العنوان';
-      document.getElementById('mainDesc').innerHTML =
-        `<span style="color:#fbbf24">اضغط على</span> <strong style="color:#e8cb9a">⋮ أو +</strong> <span style="color:#fbbf24">في شريط العنوان واختر "تثبيت التطبيق"</span>`;
-    }
-  }
-    function showAlreadyInstalled() {
-      document.getElementById('installBtn').style.display = 'none';
-      document.getElementById('iosSteps').classList.remove('show');
-      document.getElementById('successInstall').classList.add('show');
-    }
-
-    // ══════════════════════════════════════════
-    // إعادة التثبيت — مسح SW والـ Cache
-    // ══════════════════════════════════════════
-    async function forceReinstall() {
-      const btn = event.target;
-      btn.textContent = '⏳ جارٍ المسح...';
-      btn.disabled = true;
-
+    async function subscribeUser() {
       try {
-        // 1. إلغاء تسجيل كل الـ Service Workers
-        const regs = await navigator.serviceWorker.getRegistrations();
-        await Promise.all(regs.map(r => r.unregister()));
-
-        // 2. مسح كل الـ Cache
-        const keys = await caches.keys();
-        await Promise.all(keys.map(k => caches.delete(k)));
-
-        // 3. مسح localStorage
-        localStorage.removeItem('notif_subscribed');
-        localStorage.removeItem('fcm_token');
-
-        // 4. إعادة التحميل — Chrome سيعتبره PWA جديد
-        setTimeout(() => location.reload(true), 600);
-      } catch (e) {
-        btn.textContent = '🔄 إعادة التثبيت';
-        btn.disabled = false;
-        console.error('forceReinstall error:', e);
-      }
-    }
-
-    // ══════════════════════════════════════════
-    // الإشعارات
-    // ══════════════════════════════════════════
-    if (localStorage.getItem('notif_subscribed') === '1') setNotifSubscribed();
-
-    async function handleNotifSubscribe() {
-      if (!window._messaging) { alert('Firebase لم يتحمل بعد، أعد تحميل الصفحة'); return; }
-      const btn = document.getElementById('notifBtn');
-      btn.textContent = '⏳ جارٍ التفعيل...'; btn.disabled = true;
-      try {
-        const perm = await Notification.requestPermission();
-        if (perm !== 'granted') {
-          setNotifError('❌ تم رفض الإذن — فعّله من إعدادات المتصفح');
-          btn.textContent = '🔔 اشترك في الإشعارات'; btn.disabled = false; return;
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') {
+          console.log('🚫 رفض المستخدم الإذن');
+          return;
         }
-        const swReg = await navigator.serviceWorker.ready;
-        const token = await window._getToken(window._messaging, {
-          vapidKey: window._vapidKey,
-          serviceWorkerRegistration: swReg
+
+        const vKey = "BB168ueRnlIhDY0r5lrLD7pvQydPk467794F97CWizmwnvzxAWtlx3fuZ9NQtxc0QeokXdnBjiYoiINBIRvCQiY";
+        const token = await getToken(messaging, { vapidKey: vKey });
+
+        if (!token) {
+          console.warn('⚠️ مفيش توكن');
+          return;
+        }
+
+        // لو اشترك قبل كده متبعتش تاني
+        if (localStorage.getItem('notif_token') === token) {
+          console.log('✅ مشترك بالفعل');
+          return;
+        }
+
+        // ابعت الـ token للـ server عشان يشترك في topic 'all'
+        const serverUrl = window.location.port === '3000'
+          ? '/subscribe'
+          : 'http://localhost:3000/subscribe';
+        const res = await fetch(serverUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token })
         });
-        if (token) {
-          localStorage.setItem('notif_subscribed', '1');
-          localStorage.setItem('fcm_token', token);
-          console.log('✅ FCM Token:', token);
-          setNotifSubscribed();
+
+        if (res.ok) {
+          localStorage.setItem('notif_token', token);
+          console.log('✅ تم الاشتراك في الإشعارات');
+        } else {
+          console.warn('⚠️ فشل الاشتراك، هيحاول مرة تانية بكره');
         }
-      } catch (e) {
-        setNotifError('❌ خطأ: ' + e.message);
-        btn.textContent = '🔔 حاول مرة أخرى'; btn.disabled = false;
+      } catch (err) {
+        console.error('💥 خطأ في الاشتراك:', err);
       }
     }
 
-    function setNotifSubscribed() {
-      const btn = document.getElementById('notifBtn');
-      btn.className = 'btn-notif subscribed'; btn.innerHTML = '✅ مشترك في الإشعارات'; btn.disabled = true;
-      const st = document.getElementById('notifStatus');
-      st.className = 'notif-status on'; st.textContent = '✅ ستصلك إشعارات خرائف';
-    }
-
-    function setNotifError(msg) {
-      const st = document.getElementById('notifStatus');
-      st.className = 'notif-status off'; st.textContent = msg;
-    }
-
-    function showInAppNotif(title, body) {
-      document.getElementById('toastTitle').textContent = title;
-      document.getElementById('toastBody').textContent = body;
-      const t = document.getElementById('inappToast');
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 5000);
-    }
-  </script>
-
-  <!-- تسجيل Service Worker -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/firebase-messaging-sw.js')
-        .then(r => console.log('✅ SW registered:', r.scope))
-        .catch(e => console.warn('❌ SW error:', e));
-    }
+    subscribeUser();
   </script>
 </body>
 
