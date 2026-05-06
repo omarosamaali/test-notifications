@@ -155,7 +155,17 @@
       }
     }
 
-    subscribeUser();
+    // على Android والـ Desktop → اشترك تلقائي
+    // على iOS → لازم ضغطة زر (Safari requirement)
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (!isIOS) {
+      subscribeUser();
+    }
+
+    // اربط الزر بالاشتراك عشان iOS
+    document.getElementById('installBtn')?.addEventListener('click', () => {
+      subscribeUser();
+    });
   </script>
 </body>
 
